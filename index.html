@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Jagoan PJOK - SDN 1 Selabintana</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#1E40AF',
+                            sky: '#0284C7',
+                            yellow: '#F59E0B',
+                            orange: '#EA580C',
+                            green: '#16A34A',
+                            purple: '#9333EA',
+                            pink: '#DB2777',
+                            dark: '#0F172A'
+                        }
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 50%, #fef3c7 100%);
+            min-height: 100vh;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        h1, h2, h3, .font-heading {
+            font-family: 'Fredoka', cursive;
+        }
+
+        .bounce-gentle {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(-3%); }
+            50% { transform: translateY(3%); }
+        }
+
+        .pulse-star {
+            animation: pulseStar 1.5s infinite alternate;
+        }
+
+        @keyframes pulseStar {
+            0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.5)); }
+            100% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.9)); }
+        }
+
+        /* Movement Cartoon Character Keyframe Animations */
+        .anim-meliuk {
+            transform-origin: 50% 85%;
+            animation: meliukAnim 1.6s ease-in-out infinite alternate;
+        }
+        @keyframes meliukAnim {
+            0% { transform: rotate(-15deg) skewX(-5deg); }
+            100% { transform: rotate(15deg) skewX(5deg); }
+        }
+
+        .anim-menekuk {
+            animation: menekukAnim 1.3s ease-in-out infinite alternate;
+        }
+        @keyframes menekukAnim {
+            0% { transform: translateY(0) scaleY(1); }
+            100% { transform: translateY(18px) scaleY(0.82); }
+        }
+
+        .anim-mengayun {
+            transform-origin: 50% 40%;
+            animation: mengayunAnim 1.1s ease-in-out infinite alternate;
+        }
+        @keyframes mengayunAnim {
+            0% { transform: rotate(-14deg); }
+            100% { transform: rotate(14deg); }
+        }
+
+        .anim-berjalan {
+            animation: berjalanAnim 1.1s ease-in-out infinite;
+        }
+        @keyframes berjalanAnim {
+            0% { transform: translateX(-15px); }
+            50% { transform: translateX(15px) translateY(-4px); }
+            100% { transform: translateX(-15px); }
+        }
+
+        .anim-berlari {
+            animation: berlariAnim 0.45s ease-in-out infinite alternate;
+        }
+        @keyframes berlariAnim {
+            0% { transform: translateX(-22px) rotate(-6deg); }
+            100% { transform: translateX(22px) rotate(6deg); }
+        }
+
+        .anim-melompat {
+            animation: melompatAnim 0.95s ease-in-out infinite;
+        }
+        @keyframes melompatAnim {
+            0%, 100% { transform: translateY(0) scale(1, 1); }
+            30% { transform: translateY(10px) scale(1.1, 0.82); }
+            60% { transform: translateY(-45px) scale(0.92, 1.12); }
+        }
+
+        .game-card {
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.12), 0 0 0 4px rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-bounce {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-bounce:hover {
+            transform: translateY(-3px) scale(1.02);
+        }
+        .btn-bounce:active {
+            transform: translateY(2px) scale(0.98);
+        }
+
+        .image-card-choice {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .image-card-choice:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .school-logo-img {
+            max-height: 90px;
+            width: auto;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body class="p-3 md:p-6 text-slate-800 min-h-screen flex flex-col justify-between items-center">
+
+    <!-- Top Header / Progress Navigation & Watermark -->
+    <header class="w-full max-w-3xl mx-auto mb-3 bg-white/95 rounded-2xl p-3 shadow-md border border-white flex justify-between items-center relative z-20 gap-2">
+        <div class="flex items-center gap-2 overflow-hidden">
+            <!-- School Logo Small Watermark -->
+            <img src="SDN 1 TEMPLATE.jpg" alt="Logo SDN 1 Selabintana" class="w-10 h-10 object-contain shrink-0 rounded-lg border border-slate-100 shadow-sm" onerror="this.src='https://placehold.co/100x100/0284c7/ffffff?text=SDN1'">
+            <div class="truncate">
+                <h1 class="font-heading text-base md:text-lg leading-tight text-slate-800 truncate">PETUALANGAN JAGOAN PJOK</h1>
+                <p id="header-player" class="text-[11px] text-slate-500 font-bold truncate">SDN 1 SELABINTANA • Pemain: <span id="player-display-name" class="text-blue-600">Jagoan</span></p>
+            </div>
+        </div>
+
+        <!-- Audio Sound & TTS Controls -->
+        <div class="flex items-center gap-1.5 shrink-0">
+            <div id="star-counter" class="bg-amber-100 border border-amber-300 text-amber-900 font-black px-2.5 py-1 rounded-full text-xs md:text-sm flex items-center gap-1 shadow-sm">
+                <i class="fa-solid fa-star text-amber-500 pulse-star"></i>
+                <span id="star-count-text">0</span>
+            </div>
+            <!-- Speech TTS Toggle -->
+            <button id="tts-btn" onclick="toggleTTS()" title="Suara Pembaca" class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-blue-100 hover:bg-blue-200 text-blue-700 flex items-center justify-center transition font-bold">
+                <i class="fa-solid fa-volume-high" id="tts-icon"></i>
+            </button>
+            <!-- BGM Sound Toggle -->
+            <button id="sound-btn" onclick="toggleSound()" title="Efek Suara" class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
+                <i class="fa-solid fa-music" id="sound-icon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Map Stepper Bar -->
+    <div id="stepper-bar" class="w-full max-w-3xl mx-auto mb-3 bg-white/80 backdrop-blur-md rounded-2xl p-2.5 shadow-sm border border-slate-200 hidden">
+        <div class="flex justify-between items-center px-4 relative">
+            <div class="absolute top-1/2 left-8 right-8 h-2 bg-slate-200 -translate-y-1/2 -z-10 rounded-full"></div>
+            <div id="progress-line" class="absolute top-1/2 left-8 h-2 bg-emerald-500 -translate-y-1/2 -z-10 rounded-full transition-all duration-500" style="width: 0%;"></div>
+
+            <!-- Step 1 -->
+            <div id="step-node-1" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-sm border-2 border-white shadow transition-all">1</div>
+            <!-- Step 2 -->
+            <div id="step-node-2" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-sm border-2 border-white shadow transition-all">2</div>
+            <!-- Step 3 -->
+            <div id="step-node-3" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-sm border-2 border-white shadow transition-all">3</div>
+        </div>
+        <div class="flex justify-between text-[11px] font-extrabold text-slate-500 px-1 mt-1 text-center">
+            <span class="w-1/3">Level 1: Tak Berpindah</span>
+            <span class="w-1/3">Level 2: Berpindah</span>
+            <span class="w-1/3">Level 3: Kuis Seru</span>
+        </div>
+    </div>
+
+    <main class="w-full max-w-3xl flex-grow flex items-center justify-center relative my-auto">
+
+        <!-- 1. START SCREEN -->
+        <section id="screen-start" class="w-full game-card bg-white/95 rounded-3xl p-6 md:p-8 text-center flex flex-col items-center shadow-2xl relative overflow-hidden my-auto">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-amber-200 rounded-full blur-2xl opacity-60"></div>
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-200 rounded-full blur-2xl opacity-60"></div>
+
+            <!-- OFFICIAL SCHOOL LOGO -->
+            <div class="mb-3 flex justify-center items-center">
+                <img src="SDN 1 TEMPLATE.jpg" alt="Logo SDN 1 Selabintana" class="school-logo-img drop-shadow-md" onerror="this.src='https://placehold.co/200x200/0284c7/ffffff?text=SDN+1+SELABINTANA'">
+            </div>
+
+            <!-- TITLE & IDENTITIES -->
+            <h1 class="text-2xl md:text-4xl font-extrabold text-slate-800 tracking-tight mb-1">
+                PETUALANGAN <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-600">JAGOAN PJOK</span>
+            </h1>
+            
+            <div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-1.5 mb-2 inline-block">
+                <p class="font-heading font-bold text-blue-900 text-sm md:text-base tracking-wide">
+                    PJOK KELAS 1 SDN 1 SELABINTANA
+                </p>
+            </div>
+
+            <p class="text-slate-600 text-xs md:text-sm font-extrabold mb-5">
+                By Vickri Novelliani, S.Pd.
+            </p>
+
+            <p class="text-slate-600 text-xs md:text-sm max-w-md mb-6 font-semibold bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                Mari belajar gerak dasar bersama karakter 2D yang seru:<br>
+                <span class="text-amber-700 font-bold">Meliuk • Menekuk • Mengayun • Berjalan • Berlari • Melompat</span>
+            </p>
+
+            <button onclick="goToScreen('screen-name')" class="btn-bounce bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black text-lg md:text-xl px-8 py-4 rounded-2xl shadow-xl flex items-center gap-3 border-b-4 border-emerald-800">
+                <span>MULAI PETUALANGAN</span>
+                <i class="fa-solid fa-circle-play text-xl md:text-2xl"></i>
+            </button>
+        </section>
+
+
+        <!-- 2. NAME INPUT SCREEN -->
+        <section id="screen-name" class="w-full game-card bg-white/95 rounded-3xl p-6 md:p-8 text-center flex flex-col items-center shadow-2xl hidden my-auto">
+            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-3">
+                ✍️
+            </div>
+            <h2 class="text-2xl md:text-3xl font-black text-slate-800 mb-1">Siapa Namamu, Jagoan?</h2>
+            <p class="text-slate-500 text-xs md:text-sm mb-6 font-semibold">Tulis namamu agar bisa dicetak di piagam juara SDN 1 Selabintana!</p>
+
+            <div class="w-full max-w-md space-y-4 mb-6">
+                <input type="text" id="input-player-name" placeholder="Ketik namamu di sini..." 
+                    class="w-full text-center px-5 py-4 text-xl md:text-2xl font-black bg-slate-50 border-3 border-slate-300 rounded-2xl focus:border-blue-500 focus:bg-white focus:outline-none transition shadow-inner"
+                    maxlength="18">
+                <div id="name-error" class="text-red-500 text-xs font-bold hidden">Tulis namamu dulu ya! 😊</div>
+            </div>
+
+            <button onclick="submitName()" class="btn-bounce bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-lg md:text-xl px-8 py-4 rounded-2xl shadow-lg border-b-4 border-indigo-800 flex items-center gap-2">
+                <span>LANJUT KE LEVEL 1</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </section>
+
+        <!-- 3. LEVEL 1: GERAK TIDAK BERPINDAH TEMPAT -->
+        <section id="screen-l1-learn" class="w-full game-card bg-white/95 rounded-3xl p-4 md:p-7 shadow-2xl hidden my-auto">
+            <div class="flex items-center justify-between mb-3 border-b pb-3 border-slate-100">
+                <div>
+                    <span class="bg-amber-100 text-amber-800 text-xs font-black px-3 py-1 rounded-full">LEVEL 1</span>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-800">GERAK TIDAK BERPINDAH TEMPAT</h2>
+                </div>
+                <button onclick="speakCurrentMateri('l1')" class="bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs px-3 py-2 rounded-xl flex items-center gap-1 shadow">
+                    <i class="fa-solid fa-volume-high"></i> DENGARKAN
+                </button>
+            </div>
+
+            <!-- 2D Cartoon Visual Box -->
+            <div class="bg-gradient-to-b from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-4 text-center mb-4 flex flex-col items-center justify-center min-h-[220px] relative">
+                
+                <div id="l1-avatar-container" class="relative w-36 h-40 flex items-center justify-center">
+                    <!-- Dynamic 2D Cartoon Character SVG -->
+                    <div id="l1-svg-render" class="w-32 h-36"></div>
+                </div>
+
+                <div id="l1-move-title" class="font-heading text-xl text-amber-900 font-extrabold mt-1">Meliuk</div>
+                <p id="l1-move-desc" class="text-xs md:text-sm text-slate-700 font-bold max-w-md mt-1">
+                    Meliuk adalah gerakan membengkokkan atau menggerakkan tubuh ke samping.
+                </p>
+            </div>
+
+            <!-- Movement Selection Buttons -->
+            <div class="grid grid-cols-3 gap-2 md:gap-3 mb-5">
+                <button onclick="selectL1Movement('meliuk')" id="btn-l1-meliuk" class="l1-tab-btn bg-amber-100 border-2 border-amber-500 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center shadow-sm">
+                    <div class="w-10 h-10">{SVG_MINI_MELIUK}</div>
+                    <span class="font-black text-xs md:text-sm text-slate-800">Meliuk</span>
+                </button>
+                <button onclick="selectL1Movement('menekuk')" id="btn-l1-menekuk" class="l1-tab-btn bg-slate-100 border-2 border-slate-200 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center">
+                    <div class="w-10 h-10">{SVG_MINI_MENEKUK}</div>
+                    <span class="font-black text-xs md:text-sm text-slate-800">Menekuk</span>
+                </button>
+                <button onclick="selectL1Movement('mengayun')" id="btn-l1-mengayun" class="l1-tab-btn bg-slate-100 border-2 border-slate-200 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center">
+                    <div class="w-10 h-10">{SVG_MINI_MENGAYUN}</div>
+                    <span class="font-black text-xs md:text-sm text-slate-800">Mengayun</span>
+                </button>
+            </div>
+
+            <button onclick="goToScreen('screen-l2-learn')" class="w-full btn-bounce bg-emerald-600 hover:bg-emerald-700 text-white font-black text-base md:text-lg py-3.5 rounded-2xl shadow-lg border-b-4 border-emerald-800 flex items-center justify-center gap-2">
+                <span>LANJUT KE LEVEL 2</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </section>
+
+        <!-- 4. LEVEL 2: GERAK BERPINDAH TEMPAT -->
+        <section id="screen-l2-learn" class="w-full game-card bg-white/95 rounded-3xl p-4 md:p-7 shadow-2xl hidden my-auto">
+            <div class="flex items-center justify-between mb-3 border-b pb-3 border-slate-100">
+                <div>
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-black px-3 py-1 rounded-full">LEVEL 2</span>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-800">GERAK BERPINDAH TEMPAT</h2>
+                </div>
+                <button onclick="speakCurrentMateri('l2')" class="bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs px-3 py-2 rounded-xl flex items-center gap-1 shadow">
+                    <i class="fa-solid fa-volume-high"></i> DENGARKAN
+                </button>
+            </div>
+
+            <!-- 2D Cartoon Visual Box -->
+            <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-4 text-center mb-4 flex flex-col items-center justify-center min-h-[220px] relative overflow-hidden">
+                
+                <div id="l2-avatar-container" class="relative w-36 h-40 flex items-center justify-center">
+                    <div id="l2-svg-render" class="w-32 h-36"></div>
+                </div>
+
+                <div id="l2-move-title" class="font-heading text-xl text-emerald-900 font-extrabold mt-1">Berjalan</div>
+                <p id="l2-move-desc" class="text-xs md:text-sm text-slate-700 font-bold max-w-md mt-1">
+                    Berjalan adalah bergerak dari satu tempat ke tempat lain dengan langkah kaki.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 md:gap-3 mb-5">
+                <button onclick="selectL2Movement('berjalan')" id="btn-l2-berjalan" class="l2-tab-btn bg-emerald-100 border-2 border-emerald-500 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center shadow-sm">
+                    <div class="w-10 h-10">{SVG_MINI_BERJALAN}</div>
+                    <span class="font-black text-xs md:text-sm text-slate-800">Berjalan</span>
+                </button>
+                <button onclick="selectL2Movement('berlari')" id="btn-l2-berlari" class="l2-tab-btn bg-slate-100 border-2 border-slate-200 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center">
+                    <div class="w-10 h-10">{SVG_MINI_BERLARI}</div>
+                    <span class="font-black text-xs md:text-sm text-slate-800">Berlari</span>
+                </button>
+                <button onclick="selectL2Movement('melompat')" id="btn-l2-melompat" class="l2-tab-btn bg-slate-100 border-2 border-slate-200 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center">
+                    <div class="w-10 h-10">{SVG_MINI_MELOMPAT}</div>
+                    <span class="font-black text-xs md:text-sm text-slate-800">Melompat</span>
+                </button>
+            </div>
+
+            <button onclick="goToScreen('screen-l3-intro')" class="w-full btn-bounce bg-purple-600 hover:bg-purple-700 text-white font-black text-base md:text-lg py-3.5 rounded-2xl shadow-lg border-b-4 border-purple-900 flex items-center justify-center gap-2">
+                <span>LANJUT KE KUIS PETUALANGAN</span>
+                <i class="fa-solid fa-trophy"></i>
+            </button>
+        </section>
+
+        <!-- 5. LEVEL 3 INTRO -->
+        <section id="screen-l3-intro" class="w-full game-card bg-white/95 rounded-3xl p-6 text-center shadow-2xl hidden my-auto">
+            <div class="w-20 h-20 bg-purple-100 text-purple-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-3 border-2 border-purple-200">
+                🏟️
+            </div>
+            <span class="bg-purple-100 text-purple-800 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">LEVEL 3</span>
+            <h2 class="text-2xl md:text-3xl font-black text-slate-800 mt-2 mb-1">PETUALANGAN KUIS</h2>
+            <p class="text-slate-600 text-xs md:text-sm font-bold max-w-md mx-auto mb-6">
+                Tebak gambar karakter 2D dan jawab soal cerita dengan teliti!
+            </p>
+
+            <button onclick="startQuiz()" class="btn-bounce bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-lg md:text-xl px-8 py-4 rounded-2xl shadow-xl border-b-4 border-indigo-900 flex items-center gap-2 mx-auto">
+                <span>MULAI KUIS SERU ⭐</span>
+                <i class="fa-solid fa-bolt"></i>
+            </button>
+        </section>
+
+
+        <!-- 6. UNIVERSAL QUIZ INTERFACE -->
+        <section id="screen-quiz" class="w-full game-card bg-white/95 rounded-3xl p-4 md:p-6 shadow-2xl hidden my-auto">
+            <div class="flex items-center justify-between mb-3 border-b pb-3 border-slate-100">
+                <div>
+                    <span id="quiz-badge" class="bg-purple-100 text-purple-800 text-xs font-black px-3 py-1 rounded-full">⭐ LEVEL 3</span>
+                    <h2 id="quiz-title" class="text-xl md:text-2xl font-black text-slate-800">Soal 1</h2>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="speakCurrentQuestion()" class="bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs px-3 py-2 rounded-xl flex items-center gap-1 shadow">
+                        <i class="fa-solid fa-volume-high"></i> SOAL
+                    </button>
+                    <div class="text-right">
+                        <div class="text-[10px] text-slate-400 font-extrabold">PROGRESS</div>
+                        <div id="quiz-progress-text" class="text-xs md:text-sm font-black text-purple-600">1 / 10</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Optional Big SVG Card Prompt (Used for Guess Movement From Image) -->
+            <div id="quiz-image-box" class="hidden mb-3 bg-slate-50 border-2 border-slate-200 rounded-2xl p-2 text-center justify-center items-center">
+                <div id="quiz-illustration-svg" class="w-32 h-36 mx-auto"></div>
+            </div>
+
+            <!-- Question Text -->
+            <div class="mb-4">
+                <h3 id="quiz-question" class="text-base md:text-lg font-extrabold text-slate-800 leading-snug">
+                    Memuat pertanyaan...
+                </h3>
+            </div>
+
+            <!-- Options Grid (TEXT OR 2D CARTOON IMAGE CARDS) -->
+            <div id="quiz-options" class="space-y-2.5 mb-4">
+                <!-- Options dynamically injected here -->
+            </div>
+
+            <!-- Feedback Banner -->
+            <div id="quiz-feedback" class="hidden p-3.5 rounded-2xl text-center mb-3 transition-all">
+                <div id="feedback-icon" class="text-2xl mb-1">🎉</div>
+                <div id="feedback-text" class="font-black text-sm md:text-base">Jawaban Tepat sekali!</div>
+                <div id="feedback-explanation" class="text-xs font-bold mt-1 opacity-95"> Penjelasan singkat.</div>
+            </div>
+
+            <!-- Next Question Button -->
+            <button id="btn-next-question" onclick="nextQuestion()" class="w-full btn-bounce bg-blue-600 hover:bg-blue-700 text-white font-black text-base py-3.5 rounded-2xl shadow-lg border-b-4 border-blue-900 flex items-center justify-center gap-2 hidden">
+                <span>SOAL SELANJUTNYA</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </section>
+
+        <!-- 7. FINAL RESULT SCREEN -->
+        <section id="screen-result" class="w-full game-card bg-white/95 rounded-3xl p-5 md:p-7 text-center shadow-2xl hidden my-auto relative">
+            
+            <div class="bg-gradient-to-b from-amber-50 to-orange-50 border-3 border-amber-300 rounded-3xl p-5 shadow-inner relative overflow-hidden">
+                
+                <span class="bg-amber-400 text-amber-950 font-black text-[11px] px-3 py-1 rounded-full uppercase tracking-widest">PIAGAM JUARA PJOK</span>
+
+                <!-- Trophy Icon -->
+                <div class="my-2 text-5xl pulse-star inline-block">
+                    🏆
+                </div>
+
+                <!-- Player Name -->
+                <h2 id="res-player-name" class="text-2xl md:text-3xl font-black text-slate-800 mb-0.5">Nama Pemain</h2>
+                
+                <p class="text-xs font-extrabold text-slate-600 mb-2">SDN 1 SELABINTANA • Kelas 1 SD</p>
+
+                <div id="res-gelar" class="inline-block bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs md:text-sm px-4 py-1 rounded-xl shadow mb-3">
+                    Gelar: JAGOAN UTAMA PJOK
+                </div>
+
+                <!-- Stars Display -->
+                <div id="res-stars-flex" class="flex justify-center items-center gap-2 text-2xl text-amber-400 mb-3">
+                    <!-- Dynamic Stars HTML -->
+                </div>
+
+                <!-- Score Grid -->
+                <div class="grid grid-cols-2 gap-2.5 max-w-xs mx-auto mb-3">
+                    <div class="bg-white p-2.5 rounded-2xl border border-slate-200 text-center shadow-sm">
+                        <div class="text-[10px] text-slate-400 font-black uppercase">SKOR AKHIR</div>
+                        <div id="res-total-score" class="text-xl font-black text-emerald-600">100</div>
+                    </div>
+                    <div class="bg-white p-2.5 rounded-2xl border border-slate-200 text-center shadow-sm">
+                        <div class="text-[10px] text-slate-400 font-black uppercase">TOTAL BINTANG</div>
+                        <div id="res-total-stars" class="text-xl font-black text-amber-500">10 ⭐</div>
+                    </div>
+                </div>
+
+                <!-- Motivational Message Box & Author Credit -->
+                <div class="bg-white/90 rounded-2xl p-3 border border-amber-200 text-slate-700 text-xs font-bold italic mb-2">
+                    "<span id="res-motivation">Hebat sekali! Kamu sudah memahami gerak tidak berpindah tempat dan berpindah tempat dengan baik!</span>"
+                </div>
+
+                <p class="text-[11px] font-black text-blue-900">
+                    Guru PJOK: Vickri Novelliani, S.Pd.
+                </p>
+
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-2.5 mt-5">
+                <button onclick="copyResultToClipboard()" class="flex-1 btn-bounce bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 px-4 rounded-2xl shadow-lg border-b-4 border-emerald-800 flex items-center justify-center gap-2 text-sm">
+                    <i class="fa-solid fa-copy"></i>
+                    <span>SALIN HASIL AKHIR</span>
+                </button>
+                <button onclick="restartGame()" class="flex-1 btn-bounce bg-slate-200 hover:bg-slate-300 text-slate-800 font-black py-3.5 px-4 rounded-2xl shadow border-b-4 border-slate-400 flex items-center justify-center gap-2 text-sm">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>MAIN LAGI</span>
+                </button>
+            </div>
+
+            <!-- Copy Success Toast Notification -->
+            <div id="toast-copy" class="hidden absolute top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs font-extrabold px-4 py-2 rounded-full shadow-2xl flex items-center gap-2 z-50">
+                <i class="fa-solid fa-circle-check text-green-400"></i>
+                <span>Hasil berhasil disalin ke clipboard!</span>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center text-[11px] text-slate-600 font-bold mt-3 space-y-0.5">
+        <div>PETUALANGAN JAGOAN PJOK • KELAS 1 SD</div>
+        <div class="text-slate-500">SDN 1 SELABINTANA • By Vickri Novelliani, S.Pd.</div>
+    </footer>
+
+    <script>
+        // Game State Variables
+        let gameState = {
+            playerName: "Jagoan",
+            totalStars: 0,
+            score: 0,
+            currentLevel: 1, // 1, 2, 3
+            currentQuestionIdx: 0,
+            currentAttemptCount: 0,
+            quizQuestions: [],
+            soundEnabled: true,
+            ttsEnabled: true,
+            l1CurrentMove: 'meliuk',
+            l2CurrentMove: 'berjalan'
+        };
+
+        // Text-to-Speech (TTS) Engine using Web Speech API
+        function speakText(text) {
+            if (!gameState.ttsEnabled) return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = "id-ID";
+                utterance.rate = 0.88;
+                utterance.pitch = 1.1;
+
+                const voices = window.speechSynthesis.getVoices();
+                const idVoice = voices.find(v => v.lang.includes('id') || v.lang.includes('ID'));
+                if (idVoice) utterance.voice = idVoice;
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function stopSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        function toggleTTS() {
+            gameState.ttsEnabled = !gameState.ttsEnabled;
+            const icon = document.getElementById('tts-icon');
+            if (gameState.ttsEnabled) {
+                icon.className = "fa-solid fa-volume-high";
+                speakText("Suara pembaca diaktifkan");
+            } else {
+                stopSpeech();
+                icon.className = "fa-solid fa-volume-xmark text-slate-400";
+            }
+        }
+
+        // Web Audio Synthesizer Sound Generator
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            if (!gameState.soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                if (type === 'click') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(450, now);
+                    osc.frequency.exponentialRampToValueAtTime(850, now + 0.08);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'correct') {
+                    const osc1 = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc1.type = 'triangle';
+                    osc1.frequency.setValueAtTime(523.25, now); // C5
+                    osc1.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                    osc1.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+                    osc1.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc1.start(now);
+                    osc1.stop(now + 0.35);
+                } else if (type === 'wrong') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(160, now + 0.12);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.28);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.28);
+                } else if (type === 'victory') {
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+                        gain.gain.setValueAtTime(0.3, now + idx * 0.12);
+                        gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.12 + 0.25);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + idx * 0.12);
+                        osc.stop(now + idx * 0.12 + 0.25);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio notice:", e);
+            }
+        }
+
+        function toggleSound() {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (gameState.soundEnabled) {
+                icon.className = "fa-solid fa-music text-slate-700";
+                playSound('click');
+            } else {
+                icon.className = "fa-solid fa-music-slash text-slate-400";
+            }
+        }
+
+        /**
+         * Dynamic 2D Cartoon Child Character Generator
+         * Renders a cheerful 6-7 year old boy in sports jersey, shorts, and sneakers.
+         * Explicitly models all 6 core physical poses:
+         * 1. MELIUK: Body bent sideways, arms stretched high leaning sideways with wind arcs.
+         * 2. MENEKUK: Knees ditekuk (squatting pose), lowered torso, hands resting on knees.
+         * 3. MENGAYUN: Arms swinging distinctly forward and backward in motion arcs.
+         * 4. BERJALAN: One leg forward, one behind, opposite arms swinging naturally.
+         * 5. BERLARI: Body tilted forward, high knee stride, dynamic speed trails.
+         * 6. MELOMPAT: Airborne posture with feet off ground, arms up, bounce motion beneath.
+         */
+        function getMovementSVG(type, animClass = '') {
+            let innerContent = '';
+            
+            // Reusable 2D Cartoon Head Component (Cute boy child face with cap/hair, big expressive eyes & smile)
+            const getCartoonHead = (cx, cy, rotate = 0) => `
+                <g transform="translate(${cx}, ${cy}) rotate(${rotate})">
+                    <!-- Brown Spiky Kid Hair -->
+                    <path d="M -22 -10 C -25 -28, 25 -28, 22 -10 C 26 -2, 22 10, 22 10 C 18 -8, 8 -22, -2 -22 C -12 -22, -18 -8, -22 10 Z" fill="#3B1C0A" />
+                    <!-- Cute Round Peach Head -->
+                    <circle cx="0" cy="0" r="20" fill="#FED7AA" stroke="#F97316" stroke-width="1.5" />
+                    <!-- Hair Front Locks -->
+                    <path d="M -18 -8 Q -10 -22 2 -12 Q 10 -22 18 -8 Q 12 -16 0 -15 Q -12 -16 -18 -8 Z" fill="#3B1C0A" />
+                    <!-- Cheerful Eyes -->
+                    <ellipse cx="-7" cy="-2" rx="3.5" ry="4.5" fill="#0F172A" />
+                    <ellipse cx="7" cy="-2" rx="3.5" ry="4.5" fill="#0F172A" />
+                    <circle cx="-8" cy="-4" r="1.2" fill="#FFFFFF" />
+                    <circle cx="6" cy="-4" r="1.2" fill="#FFFFFF" />
+                    <!-- Rosy Cheeks -->
+                    <ellipse cx="-12" cy="5" rx="3.5" ry="2" fill="#FB7185" opacity="0.6" />
+                    <ellipse cx="12" cy="5" rx="3.5" ry="2" fill="#FB7185" opacity="0.6" />
+                    <!-- Happy Smile -->
+                    <path d="M -7 6 Q 0 13 7 6" stroke="#9A3412" stroke-width="2.5" stroke-linecap="round" fill="none" />
+                </g>
+            `;
+
+            if (type === 'meliuk') {
+                // MELIUK: Torso bent sideways, arms stretched swaying
+                innerContent = `
+                    <g class="${animClass}">
+                        <!-- Swaying Wind Lines -->
+                        <path d="M 15 25 Q 35 15 50 25 T 85 20" stroke="#38BDF8" stroke-width="3" stroke-dasharray="4 3" fill="none" stroke-linecap="round" />
+                        <path d="M 20 40 Q 40 30 60 40 T 90 35" stroke="#38BDF8" stroke-width="2.5" stroke-dasharray="3 3" fill="none" opacity="0.8" />
+
+                        <!-- Bent Torso Group (Leaning right) -->
+                        <g transform="rotate(22, 60, 110)">
+                            <!-- Right Leg (Standing steady) -->
+                            <rect x="52" y="88" width="10" height="28" rx="5" fill="#FED7AA" />
+                            <path d="M 48 112 L 66 112 L 68 122 Q 58 126 46 122 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+                            
+                            <!-- Left Leg -->
+                            <rect x="36" y="88" width="10" height="28" rx="5" fill="#FED7AA" />
+                            <path d="M 32 112 L 50 112 L 52 122 Q 42 126 30 122 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+
+                            <!-- Red Sports Shorts -->
+                            <path d="M 32 68 L 66 68 L 68 92 L 51 92 L 51 86 L 47 86 L 47 92 L 30 92 Z" fill="#1E3A8A" />
+
+                            <!-- Blue Jersey Shirt -->
+                            <path d="M 32 38 L 66 38 L 68 70 L 30 70 Z" fill="#2563EB" />
+                            <circle cx="49" cy="52" r="7" fill="#F59E0B" />
+                            <text x="49" y="55" font-size="9" font-weight="900" fill="#FFFFFF" text-anchor="middle">1</text>
+
+                            <!-- Stretched Arms Leaning Sideways -->
+                            <path d="M 32 42 L 10 22 L 16 16 L 36 38 Z" fill="#2563EB" />
+                            <circle cx="12" cy="18" r="6" fill="#FED7AA" />
+
+                            <path d="M 66 42 L 88 22 L 94 28 L 68 48 Z" fill="#2563EB" />
+                            <circle cx="92" cy="24" r="6" fill="#FED7AA" />
+
+                            <!-- Head -->
+                            ${getCartoonHead(49, 22, 10)}
+                        </g>
+                    </g>
+                `;
+            } else if (type === 'menekuk') {
+                // MENEKUK: Squatting pose with knees bent sharply, hands resting on knees
+                innerContent = `
+                    <g class="${animClass}">
+                        <!-- Floor shadow -->
+                        <ellipse cx="60" cy="122" rx="35" ry="6" fill="#CBD5E1" />
+
+                        <!-- Bent Knees & Legs (Squatting) -->
+                        <!-- Right thigh & calf bent -->
+                        <path d="M 62 75 L 85 92 L 68 118 L 56 116 L 72 94 L 56 78 Z" fill="#FED7AA" />
+                        <!-- Left thigh & calf bent -->
+                        <path d="M 38 75 L 15 92 L 32 118 L 44 116 L 28 94 L 44 78 Z" fill="#FED7AA" />
+
+                        <!-- Red Sneakers -->
+                        <path d="M 60 114 L 80 114 L 82 122 Q 70 126 58 122 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+                        <path d="M 20 114 L 40 114 L 42 122 Q 30 126 18 122 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+
+                        <!-- Navy Shorts -->
+                        <path d="M 30 65 L 70 65 L 82 82 L 58 82 L 50 72 L 42 82 L 18 82 Z" fill="#1E3A8A" />
+
+                        <!-- Blue Jersey Torso lowered -->
+                        <path d="M 32 38 L 68 38 L 72 68 L 28 68 Z" fill="#2563EB" />
+                        <circle cx="50" cy="52" r="7" fill="#F59E0B" />
+                        <text x="50" y="55" font-size="9" font-weight="900" fill="#FFFFFF" text-anchor="middle">1</text>
+
+                        <!-- Arms Resting on Bent Knees -->
+                        <path d="M 30 42 L 16 70 L 26 74 L 38 46 Z" fill="#2563EB" />
+                        <circle cx="20" cy="74" r="6" fill="#FED7AA" />
+
+                        <path d="M 70 42 L 84 70 L 74 74 L 62 46 Z" fill="#2563EB" />
+                        <circle cx="80" cy="74" r="6" fill="#FED7AA" />
+
+                        <!-- Head -->
+                        ${getCartoonHead(50, 22, 0)}
+                    </g>
+                `;
+            } else if (type === 'mengayun') {
+                // MENGAYUN: Standing with arms swinging high forward & backward in motion arcs
+                innerContent = `
+                    <g class="${animClass}">
+                        <!-- Swinging Motion Arc Trails -->
+                        <path d="M 12 35 A 32 32 0 0 1 30 75" stroke="#F59E0B" stroke-width="3" stroke-dasharray="4 3" fill="none" />
+                        <path d="M 88 35 A 32 32 0 0 0 70 75" stroke="#F59E0B" stroke-width="3" stroke-dasharray="4 3" fill="none" />
+
+                        <!-- Straight Legs standing -->
+                        <rect x="38" y="76" width="10" height="34" rx="4" fill="#FED7AA" />
+                        <rect x="52" y="76" width="10" height="34" rx="4" fill="#FED7AA" />
+
+                        <!-- Sneakers -->
+                        <path d="M 32 108 L 50 108 L 52 118 Q 42 122 30 118 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+                        <path d="M 50 108 L 68 108 L 70 118 Q 60 122 48 118 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+
+                        <!-- Navy Shorts -->
+                        <path d="M 32 58 L 68 58 L 68 78 L 51 78 L 51 72 L 47 72 L 47 78 L 32 78 Z" fill="#1E3A8A" />
+
+                        <!-- Blue Jersey Shirt -->
+                        <path d="M 34 32 L 66 32 L 68 60 L 32 60 Z" fill="#2563EB" />
+                        <circle cx="50" cy="45" r="7" fill="#F59E0B" />
+                        <text x="50" y="48" font-size="9" font-weight="900" fill="#FFFFFF" text-anchor="middle">1</text>
+
+                        <!-- Left Arm Swing Backwards (Up-Left) -->
+                        <path d="M 34 36 L 14 22 L 8 28 L 28 44 Z" fill="#2563EB" />
+                        <circle cx="10" cy="24" r="6" fill="#FED7AA" />
+
+                        <!-- Right Arm Swing Forwards (Down-Right) -->
+                        <path d="M 66 36 L 86 62 L 92 56 L 72 32 Z" fill="#2563EB" />
+                        <circle cx="90" cy="60" r="6" fill="#FED7AA" />
+
+                        <!-- Head -->
+                        ${getCartoonHead(50, 18, 0)}
+                    </g>
+                `;
+            } else if (type === 'berjalan') {
+                // BERJALAN: One leg forward, one leg behind, relaxed walking stride
+                innerContent = `
+                    <g class="${animClass}">
+                        <!-- Ground line -->
+                        <line x1="10" y1="120" x2="90" y2="120" stroke="#94A3B8" stroke-width="3" stroke-linecap="round" />
+
+                        <!-- Back Leg (Left) extending backward -->
+                        <path d="M 44 72 L 26 102 L 34 106 L 50 78 Z" fill="#FED7AA" />
+                        <path d="M 18 102 L 36 102 L 36 112 Q 26 116 16 112 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+
+                        <!-- Front Leg (Right) extending forward -->
+                        <path d="M 52 72 L 70 102 L 60 106 L 44 78 Z" fill="#FED7AA" />
+                        <path d="M 58 102 L 78 102 L 80 112 Q 70 116 56 112 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+
+                        <!-- Shorts -->
+                        <path d="M 36 54 L 64 54 L 72 74 L 52 74 L 48 68 L 44 74 L 28 74 Z" fill="#1E3A8A" />
+
+                        <!-- Jersey -->
+                        <path d="M 36 28 L 64 28 L 66 56 L 34 56 Z" fill="#2563EB" />
+                        <circle cx="50" cy="42" r="6" fill="#F59E0B" />
+                        <text x="50" y="45" font-size="8" font-weight="900" fill="#FFFFFF" text-anchor="middle">1</text>
+
+                        <!-- Arms in Natural Walk Stride -->
+                        <!-- Front Arm -->
+                        <path d="M 36 32 L 20 52 L 26 56 L 42 36 Z" fill="#2563EB" />
+                        <circle cx="22" cy="54" r="5.5" fill="#FED7AA" />
+
+                        <!-- Back Arm -->
+                        <path d="M 64 32 L 80 50 L 74 54 L 58 36 Z" fill="#2563EB" />
+                        <circle cx="78" cy="52" r="5.5" fill="#FED7AA" />
+
+                        <!-- Head -->
+                        ${getCartoonHead(50, 16, 2)}
+                    </g>
+                `;
+            } else if (type === 'berlari') {
+                // BERLARI: Body tilted forward, high knee raised, dynamic speed lines
+                innerContent = `
+                    <g class="${animClass}">
+                        <!-- Speed dash trails -->
+                        <line x1="5" y1="40" x2="22" y2="40" stroke="#EA580C" stroke-width="3.5" stroke-linecap="round" />
+                        <line x1="2" y1="65" x2="18" y2="65" stroke="#EA580C" stroke-width="3" stroke-linecap="round" />
+                        <line x1="8" y1="90" x2="25" y2="90" stroke="#EA580C" stroke-width="3" stroke-linecap="round" />
+
+                        <!-- Running Body Tilted Right -->
+                        <g transform="rotate(12, 55, 60)">
+                            <!-- Back Leg Extending Far Behind -->
+                            <path d="M 40 68 L 12 88 L 18 94 L 48 74 Z" fill="#FED7AA" />
+                            <path d="M 4 88 L 24 88 L 24 98 Q 14 102 4 98 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+
+                            <!-- Front Leg High Knee Bend -->
+                            <path d="M 52 68 L 80 72 L 68 102 L 58 98 L 68 78 L 48 74 Z" fill="#FED7AA" />
+                            <path d="M 58 100 L 78 100 L 80 110 Q 70 114 56 110 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+
+                            <!-- Navy Shorts -->
+                            <path d="M 32 52 L 64 52 L 75 72 L 53 72 L 48 65 L 43 72 L 24 72 Z" fill="#1E3A8A" />
+
+                            <!-- Blue Jersey Torso -->
+                            <path d="M 34 26 L 64 26 L 66 54 L 32 54 Z" fill="#2563EB" />
+                            <circle cx="50" cy="40" r="6" fill="#F59E0B" />
+                            <text x="50" y="43" font-size="8" font-weight="900" fill="#FFFFFF" text-anchor="middle">1</text>
+
+                            <!-- Bent Running Arms -->
+                            <!-- Back arm bent up -->
+                            <path d="M 34 30 L 14 26 L 22 46 Z" fill="#2563EB" />
+                            <circle cx="16" cy="24" r="5.5" fill="#FED7AA" />
+
+                            <!-- Front arm bent forward -->
+                            <path d="M 64 30 L 86 38 L 76 54 Z" fill="#2563EB" />
+                            <circle cx="88" cy="38" r="5.5" fill="#FED7AA" />
+
+                            <!-- Head -->
+                            ${getCartoonHead(54, 14, 5)}
+                        </g>
+                    </g>
+                `;
+            } else if (type === 'melompat') {
+                // MELOMPAT: Airborne character high above ground, arms stretched upward, bounce spring underneath
+                innerContent = `
+                    <g class="${animClass}">
+                        <!-- Spring Jump Motion Trails under feet -->
+                        <path d="M 30 115 Q 50 102 70 115" stroke="#16A34A" stroke-width="4" stroke-linecap="round" fill="none" />
+                        <path d="M 38 122 Q 50 112 62 122" stroke="#16A34A" stroke-width="3" stroke-linecap="round" fill="none" />
+
+                        <!-- Airborne Character Pose -->
+                        <!-- Bent Jumping Legs -->
+                        <path d="M 38 62 L 22 82 L 38 100 L 46 96 L 32 82 L 46 68 Z" fill="#FED7AA" />
+                        <path d="M 58 62 L 74 82 L 58 100 L 50 96 L 64 82 L 50 68 Z" fill="#FED7AA" />
+
+                        <!-- Sneakers off ground -->
+                        <path d="M 28 98 L 46 98 L 46 108 Q 36 112 26 108 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+                        <path d="M 48 98 L 66 98 L 66 108 Q 56 112 46 108 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5" />
+
+                        <!-- Navy Shorts -->
+                        <path d="M 30 48 L 70 48 L 76 66 L 52 66 L 48 60 L 44 66 L 24 66 Z" fill="#1E3A8A" />
+
+                        <!-- Blue Jersey -->
+                        <path d="M 32 24 L 68 24 L 70 50 L 30 50 Z" fill="#2563EB" />
+                        <circle cx="50" cy="37" r="6" fill="#F59E0B" />
+                        <text x="50" y="40" font-size="8" font-weight="900" fill="#FFFFFF" text-anchor="middle">1</text>
+
+                        <!-- Stretched Arms Up High -->
+                        <path d="M 32 28 L 12 8 L 20 4 L 38 20 Z" fill="#2563EB" />
+                        <circle cx="14" cy="6" r="5.5" fill="#FED7AA" />
+
+                        <path d="M 68 28 L 88 8 L 80 4 L 62 20 Z" fill="#2563EB" />
+                        <circle cx="86" cy="6" r="5.5" fill="#FED7AA" />
+
+                        <!-- Head looking up joyfully -->
+                        ${getCartoonHead(50, 12, 0)}
+                    </g>
+                `;
+            }
+
+            return `<svg viewBox="0 0 100 130" class="w-full h-full drop-shadow-md">${innerContent}</svg>`;
+        }
+
+        // QUESTION BANK (24 Soal: 4 Meliuk, 4 Menekuk, 4 Mengayun, 4 Berjalan, 4 Berlari, 4 Melompat)
+        // Strictly Grade 1 appropriate, ZERO manipulative content.
+        const QUESTION_BANK = [
+            // --- 4 SOAL MELIUK ---
+            {
+                type: 'image_choice',
+                q: "TAP gambar anak yang sedang MELIUK!",
+                targetMove: 'meliuk',
+                options: [
+                    { move: 'meliuk', text: 'Meliuk' },
+                    { move: 'berlari', text: 'Berlari' },
+                    { move: 'melompat', text: 'Melompat' }
+                ],
+                explanation: "Meliuk adalah membengkokkan tubuh ke samping tanpa berpindah tempat."
+            },
+            {
+                type: 'text_choice',
+                q: "Gerakan membengkokkan atau menggerakkan tubuh ke samping disebut...",
+                options: [
+                    { text: "Meliuk", correct: true },
+                    { text: "Berjalan", correct: false },
+                    { text: "Melompat", correct: false }
+                ],
+                explanation: "Meliuk adalah gerakan menggerakkan tubuh ke samping."
+            },
+            {
+                type: 'guess_image',
+                q: "Gerakan apakah yang dilakukan anak pada gambar di bawah?",
+                imageMove: 'meliuk',
+                options: [
+                    { text: "Meliuk", correct: true },
+                    { text: "Berlari", correct: false },
+                    { text: "Menekuk", correct: false }
+                ],
+                explanation: "Anak pada gambar membengkokkan tubuh ke samping, yaitu gerakan meliuk."
+            },
+            {
+                type: 'text_choice',
+                q: "Meniru gerakan pohon kelapa bergoyang ditiup angin adalah contoh gerak...",
+                options: [
+                    { text: "Meliuk", correct: true },
+                    { text: "Berlari", correct: false },
+                    { text: "Melompat", correct: false }
+                ],
+                explanation: "Pohon bergoyang ke samping menirukan gerakan meliuk."
+            },
+
+            // --- 4 SOAL MENEKUK ---
+            {
+                type: 'image_choice',
+                q: "TAP gambar anak yang sedang MENEKUK lutut!",
+                targetMove: 'menekuk',
+                options: [
+                    { move: 'menekuk', text: 'Menekuk' },
+                    { move: 'berjalan', text: 'Berjalan' },
+                    { move: 'mengayun', text: 'Mengayun' }
+                ],
+                explanation: "Menekuk adalah membengkokkan bagian tubuh seperti lutut atau siku."
+            },
+            {
+                type: 'text_choice',
+                q: "Gerakan membengkokkan bagian tubuh seperti lutut atau siku dinamakan...",
+                options: [
+                    { text: "Menekuk", correct: true },
+                    { text: "Berlari", correct: false },
+                    { text: "Berjalan", correct: false }
+                ],
+                explanation: "Menekuk lutut membantu melatih kelenturan kaki."
+            },
+            {
+                type: 'guess_image',
+                q: "Anak pada gambar di bawah ini sedang melakukan gerakan...",
+                imageMove: 'menekuk',
+                options: [
+                    { text: "Menekuk", correct: true },
+                    { text: "Mengayun", correct: false },
+                    { text: "Melompat", correct: false }
+                ],
+                explanation: "Anak tersebut membengkokkan lututnya (menekuk)."
+            },
+            {
+                type: 'text_choice',
+                q: "Budi ingin mengambil mainan di bawah meja. Budi sebaiknya melakukan gerak...",
+                options: [
+                    { text: "Menekuk lutut", correct: true },
+                    { text: "Melompat tinggi", correct: false },
+                    { text: "Berlari kencang", correct: false }
+                ],
+                explanation: "Menekuk lutut memudahkan kita mengambil benda di bawah."
+            },
+
+            // --- 4 SOAL MENGAYUN ---
+            {
+                type: 'image_choice',
+                q: "TAP gambar anak yang sedang MENGAYUN tangan!",
+                targetMove: 'mengayun',
+                options: [
+                    { move: 'mengayun', text: 'Mengayun' },
+                    { move: 'meliuk', text: 'Meliuk' },
+                    { move: 'berlari', text: 'Berlari' }
+                ],
+                explanation: "Mengayun adalah menggerakkan tangan atau kaki ke depan dan belakang."
+            },
+            {
+                type: 'text_choice',
+                q: "Menggerakkan anggota tubuh ke depan dan belakang secara berirama disebut...",
+                options: [
+                    { text: "Mengayun", correct: true },
+                    { text: "Berjalan", correct: false },
+                    { text: "Melompat", correct: false }
+                ],
+                explanation: "Mengayun lengan melatih pergerakan bahu dan tangan."
+            },
+            {
+                type: 'guess_image',
+                q: "Perhatikan gambar! Gerakan apakah ini?",
+                imageMove: 'mengayun',
+                options: [
+                    { text: "Mengayun", correct: true },
+                    { text: "Menekuk", correct: false },
+                    { text: "Berlari", correct: false }
+                ],
+                explanation: "Gambar menunjukkan gerakan mengayunkan kedua lengan."
+            },
+            {
+                type: 'text_choice',
+                q: "Manakah yang merupakan contoh gerak tidak berpindah tempat?",
+                options: [
+                    { text: "Mengayun tangan", correct: true },
+                    { text: "Berlari ke lapangan", correct: false },
+                    { text: "Melompat ke depan", correct: false }
+                ],
+                explanation: "Mengayun tangan dilakukan tanpa berpindah tempat."
+            },
+
+            // --- 4 SOAL BERJALAN ---
+            {
+                type: 'image_choice',
+                q: "TAP gambar anak yang sedang BERJALAN!",
+                targetMove: 'berjalan',
+                options: [
+                    { move: 'berjalan', text: 'Berjalan' },
+                    { move: 'melompat', text: 'Melompat' },
+                    { move: 'meliuk', text: 'Meliuk' }
+                ],
+                explanation: "Berjalan adalah melangkah secara santai berpindah tempat."
+            },
+            {
+                type: 'text_choice',
+                q: "Bergerak dari satu tempat ke tempat lain dengan langkah kaki dinamakan...",
+                options: [
+                    { text: "Berjalan", correct: true },
+                    { text: "Menekuk", correct: false },
+                    { text: "Mengayun", correct: false }
+                ],
+                explanation: "Berjalan adalah gerak dasar berpindah tempat."
+            },
+            {
+                type: 'guess_image',
+                q: "Anak pada gambar ini sedang menuju ke sekolah. Gerakannya adalah...",
+                imageMove: 'berjalan',
+                options: [
+                    { text: "Berjalan", correct: true },
+                    { text: "Meliuk", correct: false },
+                    { text: "Menekuk", correct: false }
+                ],
+                explanation: "Melangkah teratur menuju sekolah dinamakan berjalan."
+            },
+            {
+                type: 'text_choice',
+                q: "Siti melangkah santai menuju taman. Siti sedang melakukan gerakan...",
+                options: [
+                    { text: "Berjalan", correct: true },
+                    { text: "Melompat", correct: false },
+                    { text: "Mengayun", correct: false }
+                ],
+                explanation: "Melangkah santai ke depan dinamakan berjalan."
+            },
+
+            // --- 4 SOAL BERLARI ---
+            {
+                type: 'image_choice',
+                q: "TAP gambar anak yang sedang BERLARI!",
+                targetMove: 'berlari',
+                options: [
+                    { move: 'berlari', text: 'Berlari' },
+                    { move: 'berjalan', text: 'Berjalan' },
+                    { move: 'menekuk', text: 'Menekuk' }
+                ],
+                explanation: "Berlari adalah berpindah tempat dengan langkah kaki yang cepat."
+            },
+            {
+                type: 'text_choice',
+                q: "Bergerak berpindah tempat dengan langkah yang lebih cepat disebut...",
+                options: [
+                    { text: "Berlari", correct: true },
+                    { text: "Mengayun", correct: false },
+                    { text: "Meliuk", correct: false }
+                ],
+                explanation: "Berlari dilakukan lebih cepat daripada berjalan."
+            },
+            {
+                type: 'guess_image',
+                q: "Gerakan apakah yang dilakukan anak pada gambar?",
+                imageMove: 'berlari',
+                options: [
+                    { text: "Berlari", correct: true },
+                    { text: "Menekuk", correct: false },
+                    { text: "Mengayun", correct: false }
+                ],
+                explanation: "Anak melangkah cepat di mana kaki melayang sejenak (berlari)."
+            },
+            {
+                type: 'text_choice',
+                q: "Rani ingin sampai ke garis akhir dengan sangat cepat. Rani harus...",
+                options: [
+                    { text: "Berlari", correct: true },
+                    { text: "Meliuk", correct: false },
+                    { text: "Menekuk", correct: false }
+                ],
+                explanation: "Berlari membuat kita sampai lebih cepat ke tujuan."
+            },
+
+            // --- 4 SOAL MELOMPAT ---
+            {
+                type: 'image_choice',
+                q: "TAP gambar anak yang sedang MELOMPAT!",
+                targetMove: 'melompat',
+                options: [
+                    { move: 'melompat', text: 'Melompat' },
+                    { move: 'berjalan', text: 'Berjalan' },
+                    { move: 'mengayun', text: 'Mengayun' }
+                ],
+                explanation: "Melompat adalah mendorong tubuh ke atas dengan tumpuan kaki."
+            },
+            {
+                type: 'text_choice',
+                q: "Gerakan mendorong tubuh ke atas dengan menggunakan kaki disebut...",
+                options: [
+                    { text: "Melompat", correct: true },
+                    { text: "Meliuk", correct: false },
+                    { text: "Menekuk", correct: false }
+                ],
+                explanation: "Melompat mengangkat tubuh ke udara dan mendarat kembali."
+            },
+            {
+                type: 'guess_image',
+                q: "Perhatikan gambar! Gerakan melayang ke atas ini adalah...",
+                imageMove: 'melompat',
+                options: [
+                    { text: "Melompat", correct: true },
+                    { text: "Berjalan", correct: false },
+                    { text: "Mengayun", correct: false }
+                ],
+                explanation: "Gerakan mengangkat tubuh ke atas dinamakan melompat."
+            },
+            {
+                type: 'text_choice',
+                q: "Manakah yang merupakan contoh gerak BERPINDAH TEMPAT?",
+                options: [
+                    { text: "Melompat ke depan", correct: true },
+                    { text: "Meliuk ke kiri", correct: false },
+                    { text: "Menekuk siku", correct: false }
+                ],
+                explanation: "Melompat ke depan berpindah dari satu titik ke titik lain."
+            }
+        ];
+
+        // Fisher-Yates Array Shuffle Utility
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Screen Navigation
+        function goToScreen(screenId) {
+            playSound('click');
+            stopSpeech();
+
+            const screens = ['screen-start', 'screen-name', 'screen-l1-learn', 'screen-l2-learn', 'screen-l3-intro', 'screen-quiz', 'screen-result'];
+            screens.forEach(s => {
+                const el = document.getElementById(s);
+                if (el) el.classList.add('hidden');
+            });
+
+            const target = document.getElementById(screenId);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+
+            // Stepper bar visibility
+            const stepper = document.getElementById('stepper-bar');
+            if (screenId === 'screen-start' || screenId === 'screen-name' || screenId === 'screen-result') {
+                stepper.classList.add('hidden');
+            } else {
+                stepper.classList.remove('hidden');
+                updateStepperUI(screenId);
+            }
+
+            if (screenId === 'screen-l1-learn') {
+                selectL1Movement('meliuk');
+            } else if (screenId === 'screen-l2-learn') {
+                selectL2Movement('berjalan');
+            }
+        }
+
+        function submitName() {
+            const input = document.getElementById('input-player-name');
+            const name = input.value.trim();
+            if (!name) {
+                document.getElementById('name-error').classList.remove('hidden');
+                playSound('wrong');
+                speakText("Tulis namamu dulu ya!");
+                return;
+            }
+            document.getElementById('name-error').classList.add('hidden');
+            gameState.playerName = name;
+            document.getElementById('player-display-name').innerText = name;
+            goToScreen('screen-l1-learn');
+        }
+
+        function updateStepperUI(screenId) {
+            let currentLvl = 1;
+            if (screenId === 'screen-l2-learn') currentLvl = 2;
+            if (screenId === 'screen-l3-intro' || screenId === 'screen-quiz') currentLvl = 3;
+
+            const progressLine = document.getElementById('progress-line');
+            const pct = ((currentLvl - 1) / 2) * 100;
+            progressLine.style.width = pct + '%';
+
+            for (let i = 1; i <= 3; i++) {
+                const node = document.getElementById(`step-node-${i}`);
+                if (i < currentLvl) {
+                    node.className = "w-9 h-9 md:w-10 md:h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-black text-sm border-2 border-white shadow transition-all";
+                } else if (i === currentLvl) {
+                    node.className = "w-9 h-9 md:w-10 md:h-10 rounded-full bg-amber-400 text-amber-950 flex items-center justify-center font-black text-base border-2 border-white shadow-lg pulse-star transition-all";
+                } else {
+                    node.className = "w-9 h-9 md:w-10 md:h-10 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center font-black text-sm border-2 border-white shadow transition-all";
+                }
+            }
+        }
+
+        function updateStarsHeader() {
+            document.getElementById('star-count-text').innerText = gameState.totalStars;
+        }
+
+        // LEVEL 1: Non-lokomotor movement selection
+        function selectL1Movement(type) {
+            playSound('click');
+            gameState.l1CurrentMove = type;
+            const container = document.getElementById('l1-svg-render');
+            const titleEl = document.getElementById('l1-move-title');
+            const descEl = document.getElementById('l1-move-desc');
+
+            document.querySelectorAll('.l1-tab-btn').forEach(btn => {
+                btn.className = "l1-tab-btn bg-slate-100 border-2 border-slate-200 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center";
+            });
+
+            if (type === 'meliuk') {
+                document.getElementById('btn-l1-meliuk').className = "l1-tab-btn bg-amber-100 border-2 border-amber-500 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center shadow-sm";
+                container.innerHTML = getMovementSVG('meliuk', 'anim-meliuk');
+                titleEl.innerText = "Meliuk";
+                descEl.innerText = "Meliuk adalah gerakan membengkokkan atau menggerakkan tubuh ke samping.";
+            } else if (type === 'menekuk') {
+                document.getElementById('btn-l1-menekuk').className = "l1-tab-btn bg-amber-100 border-2 border-amber-500 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center shadow-sm";
+                container.innerHTML = getMovementSVG('menekuk', 'anim-menekuk');
+                titleEl.innerText = "Menekuk";
+                descEl.innerText = "Menekuk adalah gerakan membengkokkan bagian tubuh seperti lutut atau siku.";
+            } else if (type === 'mengayun') {
+                document.getElementById('btn-l1-mengayun').className = "l1-tab-btn bg-amber-100 border-2 border-amber-500 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center shadow-sm";
+                container.innerHTML = getMovementSVG('mengayun', 'anim-mengayun');
+                titleEl.innerText = "Mengayun";
+                descEl.innerText = "Mengayun adalah gerakan menggerakkan anggota tubuh ke depan dan belakang.";
+            }
+            speakCurrentMateri('l1');
+        }
+
+        // LEVEL 2: Lokomotor movement selection
+        function selectL2Movement(type) {
+            playSound('click');
+            gameState.l2CurrentMove = type;
+            const container = document.getElementById('l2-svg-render');
+            const titleEl = document.getElementById('l2-move-title');
+            const descEl = document.getElementById('l2-move-desc');
+
+            document.querySelectorAll('.l2-tab-btn').forEach(btn => {
+                btn.className = "l2-tab-btn bg-slate-100 border-2 border-slate-200 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center";
+            });
+
+            if (type === 'berjalan') {
+                document.getElementById('btn-l2-berjalan').className = "l2-tab-btn bg-emerald-100 border-2 border-emerald-500 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center shadow-sm";
+                container.innerHTML = getMovementSVG('berjalan', 'anim-berjalan');
+                titleEl.innerText = "Berjalan";
+                descEl.innerText = "Berjalan adalah bergerak dari satu tempat ke tempat lain dengan langkah kaki.";
+            } else if (type === 'berlari') {
+                document.getElementById('btn-l2-berlari').className = "l2-tab-btn bg-emerald-100 border-2 border-emerald-500 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center shadow-sm";
+                container.innerHTML = getMovementSVG('berlari', 'anim-berlari');
+                titleEl.innerText = "Berlari";
+                descEl.innerText = "Berlari adalah bergerak berpindah tempat dengan langkah yang lebih cepat.";
+            } else if (type === 'melompat') {
+                document.getElementById('btn-l2-melompat').className = "l2-tab-btn bg-emerald-100 border-2 border-emerald-500 p-2.5 rounded-2xl flex flex-col items-center gap-1 transition text-center shadow-sm";
+                container.innerHTML = getMovementSVG('melompat', 'anim-melompat');
+                titleEl.innerText = "Melompat";
+                descEl.innerText = "Melompat adalah gerakan mendorong tubuh ke atas dengan menggunakan kaki.";
+            }
+            speakCurrentMateri('l2');
+        }
+
+        function speakCurrentMateri(lvl) {
+            if (lvl === 'l1') {
+                const title = document.getElementById('l1-move-title').innerText;
+                const desc = document.getElementById('l1-move-desc').innerText;
+                speakText(`${title}. ${desc}`);
+            } else if (lvl === 'l2') {
+                const title = document.getElementById('l2-move-title').innerText;
+                const desc = document.getElementById('l2-move-desc').innerText;
+                speakText(`${title}. ${desc}`);
+            }
+        }
+
+        // QUIZ SYSTEM - Randomizes questions & option positions dynamically
+        function startQuiz() {
+            gameState.currentLevel = 3;
+            gameState.currentQuestionIdx = 0;
+            // Pick 10 randomized questions from the 24 question bank
+            gameState.quizQuestions = shuffleArray(QUESTION_BANK).slice(0, 10);
+            goToScreen('screen-quiz');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const qData = gameState.quizQuestions[gameState.currentQuestionIdx];
+            gameState.currentAttemptCount = 0;
+
+            document.getElementById('quiz-title').innerText = `Soal ${gameState.currentQuestionIdx + 1}`;
+            document.getElementById('quiz-progress-text').innerText = `${gameState.currentQuestionIdx + 1} / ${gameState.quizQuestions.length}`;
+
+            // Image Box for Guess Image questions
+            const imgBox = document.getElementById('quiz-image-box');
+            if (qData.type === 'guess_image') {
+                imgBox.classList.remove('hidden');
+                imgBox.classList.add('flex');
+                document.getElementById('quiz-illustration-svg').innerHTML = getMovementSVG(qData.imageMove, 'anim-' + qData.imageMove);
+            } else {
+                imgBox.classList.add('hidden');
+                imgBox.classList.remove('flex');
+            }
+
+            // Question Prompt Text
+            document.getElementById('quiz-question').innerText = qData.q;
+
+            let shuffledOptions = [];
+
+            if (qData.type === 'image_choice') {
+                // Image choice options (2D Cartoon Card visual buttons)
+                const rawOpts = qData.options.map(opt => ({
+                    move: opt.move,
+                    text: opt.text,
+                    isCorrect: opt.move === qData.targetMove
+                }));
+                shuffledOptions = shuffleArray(rawOpts);
+            } else {
+                // Text choice options
+                shuffledOptions = shuffleArray(qData.options);
+            }
+
+            // Render Options Box
+            const optionsBox = document.getElementById('quiz-options');
+            optionsBox.innerHTML = '';
+
+            if (qData.type === 'image_choice') {
+                // Render 3 Image Choice Cards in Grid with 2D Cartoon Child illustrations
+                optionsBox.className = "grid grid-cols-3 gap-2 md:gap-3 mb-4";
+                
+                shuffledOptions.forEach((opt, idx) => {
+                    const letter = String.fromCharCode(65 + idx);
+                    const card = document.createElement('div');
+                    card.className = "quiz-opt-btn image-card-choice bg-slate-50 border-3 border-slate-200 hover:border-blue-400 p-2 md:p-3 rounded-2xl flex flex-col items-center text-center shadow-sm";
+                    card.onclick = () => handleAnswerSelect(opt.isCorrect, qData.explanation, card, opt.text);
+
+                    card.innerHTML = `
+                        <span class="w-6 h-6 rounded-lg bg-blue-600 text-white font-black text-xs flex items-center justify-center mb-1">${letter}</span>
+                        <div class="w-20 h-24 md:w-24 md:h-28 mx-auto">${getMovementSVG(opt.move, 'anim-' + opt.move)}</div>
+                        <span class="font-black text-xs md:text-sm text-slate-800 mt-1">${opt.text}</span>
+                    `;
+                    optionsBox.appendChild(card);
+                });
+            } else {
+                // Render Standard Text Buttons
+                optionsBox.className = "space-y-2.5 mb-4";
+
+                shuffledOptions.forEach((opt, idx) => {
+                    const letter = String.fromCharCode(65 + idx);
+                    const btn = document.createElement('button');
+                    btn.className = "quiz-opt-btn w-full text-left p-3.5 rounded-2xl border-3 border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-400 font-extrabold text-slate-800 transition flex items-center justify-between shadow-sm";
+                    btn.onclick = () => handleAnswerSelect(opt.correct, qData.explanation, btn, `${letter}. ${opt.text}`);
+
+                    btn.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl bg-white border-2 border-slate-300 flex items-center justify-center font-black text-slate-700 text-sm shadow-sm">${letter}</span>
+                            <span class="text-sm md:text-base">${opt.text}</span>
+                        </div>
+                        <i class="fa-regular fa-circle text-slate-300 text-lg icon-check"></i>
+                    `;
+                    optionsBox.appendChild(btn);
+                });
+            }
+
+            // Reset Feedback UI & Next Button
+            document.getElementById('quiz-feedback').classList.add('hidden');
+            document.getElementById('btn-next-question').classList.add('hidden');
+
+            // Read Question via TTS automatically
+            speakCurrentQuestion();
+        }
+
+        function speakCurrentQuestion() {
+            const qData = gameState.quizQuestions[gameState.currentQuestionIdx];
+            speakText(qData.q);
+        }
+
+        function handleAnswerSelect(isCorrect, explanation, element, speakName) {
+            gameState.currentAttemptCount++;
+            const optionBtns = document.querySelectorAll('.quiz-opt-btn');
+
+            const feedback = document.getElementById('quiz-feedback');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackText = document.getElementById('feedback-text');
+            const feedbackExp = document.getElementById('feedback-explanation');
+
+            if (isCorrect) {
+                // Disable options after correct answer
+                optionBtns.forEach(btn => btn.onclick = null);
+
+                playSound('correct');
+                if (element.classList.contains('image-card-choice')) {
+                    element.className = "quiz-opt-btn image-card-choice bg-green-100 border-4 border-green-500 p-2 md:p-3 rounded-2xl flex flex-col items-center text-center shadow";
+                } else {
+                    element.className = "quiz-opt-btn w-full text-left p-3.5 rounded-2xl border-3 border-green-500 bg-green-50 font-extrabold text-green-900 transition flex items-center justify-between shadow-sm";
+                    const icon = element.querySelector('.icon-check');
+                    if (icon) icon.className = "fa-solid fa-circle-check text-green-600 text-xl";
+                }
+
+                feedback.className = "p-3.5 rounded-2xl text-center mb-3 transition-all bg-emerald-100 text-emerald-950 border-2 border-emerald-400";
+                feedbackIcon.innerText = "🎉";
+                feedbackText.innerText = "Benar! Hebat!";
+                feedbackExp.innerText = explanation;
+
+                // Score Calculation (+10 on first attempt, +5 if retried)
+                if (gameState.currentAttemptCount === 1) {
+                    gameState.score += 10;
+                    gameState.totalStars += 1;
+                } else {
+                    gameState.score += 5;
+                }
+                updateStarsHeader();
+
+                speakText(`Benar! Hebat! ${explanation}`);
+
+                document.getElementById('btn-next-question').classList.remove('hidden');
+
+            } else {
+                playSound('wrong');
+                if (element.classList.contains('image-card-choice')) {
+                    element.className = "quiz-opt-btn image-card-choice bg-red-100 border-4 border-red-400 opacity-60 p-2 md:p-3 rounded-2xl flex flex-col items-center text-center";
+                } else {
+                    element.className = "quiz-opt-btn w-full text-left p-3.5 rounded-2xl border-3 border-red-400 bg-red-50 font-extrabold text-red-900 transition flex items-center justify-between opacity-60";
+                    const icon = element.querySelector('.icon-check');
+                    if (icon) icon.className = "fa-solid fa-circle-xmark text-red-500 text-xl";
+                }
+
+                feedback.className = "p-3.5 rounded-2xl text-center mb-3 transition-all bg-amber-100 text-amber-950 border-2 border-amber-300";
+                feedbackIcon.innerText = "❌";
+                feedbackText.innerText = "Belum tepat. Ayo coba lagi!";
+                feedbackExp.innerText = explanation;
+
+                speakText(`Belum tepat. ${explanation}. Ayo coba pilihan lain!`);
+            }
+
+            feedback.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            playSound('click');
+            gameState.currentQuestionIdx++;
+
+            if (gameState.currentQuestionIdx < gameState.quizQuestions.length) {
+                loadQuestion();
+            } else {
+                showFinalResults();
+            }
+        }
+
+        function showFinalResults() {
+            playSound('victory');
+            confetti({
+                particleCount: 130,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+
+            goToScreen('screen-result');
+
+            document.getElementById('res-player-name').innerText = gameState.playerName;
+
+            let gelar = "JAGOAN PJOK SD";
+            let motivation = "Luar biasa! Kamu sudah berusaha mengenal gerak tidak berpindah tempat dan berpindah tempat dengan baik!";
+
+            if (gameState.score >= 90) {
+                gelar = "👑 JAGOAN UTAMA PJOK";
+                motivation = "Luar biasa sempurna! Kamu menguasai seluruh gerakan meliuk, menekuk, mengayun, berjalan, berlari, dan melompat!";
+            } else if (gameState.score >= 60) {
+                gelar = "⭐ BINTANG KEBUGARAN";
+                motivation = "Sangat baik! Pemahamanmu tentang gerak olahraga sangat tinggi. Teruskan kebiasaan hidup sehat!";
+            }
+
+            document.getElementById('res-gelar').innerText = `Gelar: ${gelar}`;
+            document.getElementById('res-total-score').innerText = gameState.score;
+            document.getElementById('res-total-stars').innerText = `${gameState.totalStars} ⭐`;
+            document.getElementById('res-motivation').innerText = motivation;
+
+            // Render Stars Flex
+            const starsContainer = document.getElementById('res-stars-flex');
+            starsContainer.innerHTML = '';
+            
+            const count = Math.min(Math.max(Math.ceil(gameState.totalStars / 2), 1), 5);
+            for (let i = 0; i < 5; i++) {
+                if (i < count) {
+                    starsContainer.innerHTML += `<i class="fa-solid fa-star text-amber-400 pulse-star"></i>`;
+                } else {
+                    starsContainer.innerHTML += `<i class="fa-regular fa-star text-slate-300"></i>`;
+                }
+            }
+
+            speakText(`Selamat ${gameState.playerName}! Kamu meraih skor ${gameState.score}. ${motivation}`);
+        }
+
+        // Copy Text Summary to Clipboard
+        function copyResultToClipboard() {
+            playSound('click');
+            const textToCopy = 
+`🏆 PIAGAM PETUALANGAN JAGOAN PJOK 🏆
+---------------------------------
+Sekolah     : SDN 1 SELABINTANA
+Nama Pemain : ${gameState.playerName}
+Skor Akhir  : ${gameState.score} Poin
+Total Bintang: ${gameState.totalStars} ⭐
+Gelar PJOK  : ${document.getElementById('res-gelar').innerText}
+Guru PJOK   : Vickri Novelliani, S.Pd.
+
+Pesan Motivasi:
+"${document.getElementById('res-motivation').innerText}"
+---------------------------------
+Belajar PJOK Seru & Sehat Setiap Hari! 🏃‍♂️✨`;
+
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = textToCopy;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+
+            const toast = document.getElementById('toast-copy');
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        function restartGame() {
+            playSound('click');
+            gameState.score = 0;
+            gameState.totalStars = 0;
+            gameState.currentLevel = 1;
+            gameState.currentQuestionIdx = 0;
+            updateStarsHeader();
+            goToScreen('screen-start');
+        }
+
+        // Initialize view on load & populate tab mini icons
+        window.onload = function() {
+            // Replace placeholder mini icons for tab buttons
+            document.querySelectorAll('.l1-tab-btn, .l2-tab-btn').forEach(btn => {
+                const html = btn.innerHTML;
+                btn.innerHTML = html
+                    .replace('{SVG_MINI_MELIUK}', getMovementSVG('meliuk'))
+                    .replace('{SVG_MINI_MENEKUK}', getMovementSVG('menekuk'))
+                    .replace('{SVG_MINI_MENGAYUN}', getMovementSVG('mengayun'))
+                    .replace('{SVG_MINI_BERJALAN}', getMovementSVG('berjalan'))
+                    .replace('{SVG_MINI_BERLARI}', getMovementSVG('berlari'))
+                    .replace('{SVG_MINI_MELOMPAT}', getMovementSVG('melompat'));
+            });
+
+            goToScreen('screen-start');
+        };
+    </script>
+</body>
+</html>
